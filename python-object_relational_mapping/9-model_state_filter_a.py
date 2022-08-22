@@ -1,20 +1,22 @@
 #!/usr/bin/python3
-""" list objects with a in them """
-
-
+"""cript that lists all State objects that contain the letter a from the
+database hbtn_0e_6_usa
+"""
 if __name__ == "__main__":
-    from sys import argv
-    from model_state import State, Base
-    from sqlalchemy import create_engine
+
+    import sys
+    from model_state import Base, State
+    from sqlalchemy import (create_engine)
     from sqlalchemy.orm import sessionmaker
+
     engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(
-        argv[1], argv[2], argv[3]), pool_pre_ping=True)
-    session = sessionmaker(bind=engine)
+        sys.argv[1], sys.argv[2], sys.argv[3]), pool_pre_ping=True)
+    Session = sessionmaker(bind=engine)
+    session = Session()
     Base.metadata.create_all(engine)
-    st = session().query(State).filter(State.name.like('%a%')).order_by(
-        State.id).all()
-    if st:
-        for stat in st:
-            if 'a' in stat.name:
-                print("{}: {}".format(stat.id, stat.name))
-    session().close()
+
+    records = session.query(State).filter(
+        State.name.like('%a%')).order_by(State.id)
+    for record in records:
+        print("{}: {}".format(record.id, record.name))
+    session.close()
