@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""script that prints the first State object from the database hbtn_0e_6_usa
+"""script that lists all State objects from the database hbtn_0e_6_usa
 """
 if __name__ == "__main__":
 
@@ -13,10 +13,9 @@ if __name__ == "__main__":
     Session = sessionmaker(bind=engine)
     session = Session()
     Base.metadata.create_all(engine)
+    records = session.query(State).order_by(State.id)
 
-    records = session.query(State).first()
-    if records:
-        print("{}: {}".format(records.id, records.name))
-    else:
-        print("Nothing")
+    for record in records:
+        print("{}: {}".format(record.id, record.name))
+
     session.close()
