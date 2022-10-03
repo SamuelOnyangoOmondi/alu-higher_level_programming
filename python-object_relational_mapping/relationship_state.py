@@ -1,20 +1,23 @@
 #!/usr/bin/python3
 """
-Contains State class and Base, an instance of declarative_base()
+Lists all State objects that contain the letter a
+from the database hbtn_0e_6_usa.
+Usage: ./9-model_state_filter_a.py <mysql username> /
+                                   <mysql password> /
+                                   <database name>
 """
-from sqlalchemy import Column, Integer, String, MetaData
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+import sys
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from model_state import State
 
-mymetadata = MetaData()
-Base = declarative_base(metadata=mymetadata)
+if __name__ == "__main__":
+    engine = create_engine("mysql+mysqldb://{}:{}@localhost/{}"
+                           .format(sys.argv[1], sys.argv[2], sys.argv[3]),
+                           pool_pre_ping=True)
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
-
-class State(Base):
-    """
-    Class with id and name attributes of each state
-    """
-    __tablename__ = 'states'
-    id = Column(Integer, unique=True, nullable=False, primary_key=True)
-    name = Column(String(128), nullable=False)
-    cities = relationship("City", backref="states")
+    for state in session.query(State).order_by(State.id):
+        if "a" in state.name:
+            print("{}: {}".format(state.id, state.name))
