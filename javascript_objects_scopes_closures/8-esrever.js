@@ -9,4 +9,3 @@ exports.esrever = function (list) {
   return temp;
 };
 Footer
-© 2022 GitHub, Inc.
